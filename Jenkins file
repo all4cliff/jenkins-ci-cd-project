@@ -17,7 +17,7 @@ pipeline {
             stage('deploy') {
                 steps {
                     echo 'Deploying....'
-            sshagent(['Deploy_user']) {
+            ssh agent(['Deploy_user']) {
             sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/Jenkins-ci-cd-project/target/webapp-0.2.war ec2-user@44.214.8.90:/home/ec2-user/opt/tomcat"
                 }
             }
