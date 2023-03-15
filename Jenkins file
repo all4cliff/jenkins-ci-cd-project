@@ -1,11 +1,13 @@
-pipeline {
+pipeline{
     agent any
-
-        stages {
+    tools{
+        maven 'local_maven'
+    }
+     stages {
             stage('build') {
                 steps {
                     echo 'Building..'
-            sh '/usr/share/maven/bin/mvn package'
+            sh '/usr/share/maven/bin/mvn clean package'
                 }
             }
             stage('test') {
@@ -16,11 +18,8 @@ pipeline {
             }
             stage('deploy') {
                 steps {
-                    echo 'Deploying....'
-            ssh agent(credentials: ['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']) {
-            sh "scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/Jenkins-ci-cd-project/target/webapp-0.2.war ec2-user@44.214.8.90:/home/ec2-user/opt/tomcat"
-                }
-            }
-        }
+                    echo "Deploying...."
+deploy adapters: [tomcat9(credentialsId: 'c5523984-9bdd-46f5-8be2-c6af844d1a2a', path: '', url: 'http://44.198.180.20:8080')], contextPath: null, onFailure: false, war: '*/.war'      }
     }
+  }
 }
